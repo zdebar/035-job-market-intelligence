@@ -7,6 +7,7 @@ from job_market_intelligence.ingestion.sources.jooble_cz import (
 )
 
 CONFIG_PATH = Path("config/sources/jooble-cz.toml")
+SETTINGS_PATH = Path("config/settings.toml")
 
 
 def test_jooble_configuration_loads() -> None:
@@ -18,8 +19,9 @@ def test_jooble_configuration_loads() -> None:
 
 def test_jooble_payload_uses_configured_values() -> None:
     config = load_config(CONFIG_PATH)
+    settings = load_config(SETTINGS_PATH)
 
-    assert build_payload(config) == {
+    assert build_payload(config, settings) == {
         "keywords": "Data Engineer, AI Engineer",
         "location": "Czech Republic",
         "page": 1,
@@ -30,8 +32,9 @@ def test_jooble_payload_uses_configured_values() -> None:
 
 def test_jooble_payload_can_be_limited_for_testing() -> None:
     config = load_config(CONFIG_PATH)
+    settings = load_config(SETTINGS_PATH)
 
-    assert build_payload(config, result_on_page=10)["ResultOnPage"] == 10
+    assert build_payload(config, settings, result_on_page=10)["ResultOnPage"] == 10
 
 
 def test_endpoint_redaction_does_not_contain_api_key() -> None:

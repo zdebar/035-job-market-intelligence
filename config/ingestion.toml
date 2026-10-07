@@ -1,0 +1,7 @@
+[settings]
+path = "config/settings.toml"
+
+[[sources]]
+id = "jooble-cz"
+enabled = true
+config_path = "config/sources/jooble-cz.toml"

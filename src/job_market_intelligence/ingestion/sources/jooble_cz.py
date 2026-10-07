@@ -14,26 +14,31 @@ from typing import Any
 
 from dotenv import load_dotenv
 
+from job_market_intelligence.ingestion.config import load_toml
 from job_market_intelligence.ingestion.http_client import HttpClient, HttpResponse
 
 PROJECT_ROOT = Path(__file__).resolve().parents[4]
 DEFAULT_CONFIG_PATH = PROJECT_ROOT / "config" / "sources" / "jooble-cz.toml"
+DEFAULT_SETTINGS_PATH = PROJECT_ROOT / "config" / "settings.toml"
 
 
 def load_config(config_path: Path) -> dict[str, Any]:
     """Load a source configuration from a TOML file."""
-    with config_path.open("rb") as config_file:
-        return tomllib.load(config_file)
+    return load_toml(config_path)
 
 
-def build_payload(config: dict[str, Any], result_on_page: int | None = None) -> dict[str, Any]:
-    """Build the Jooble request body from source configuration."""
+def build_payload(
+    config: dict[str, Any],
+    settings: dict[str, Any],
+    result_on_page: int | None = None,
+) -> dict[str, Any]:
+    """Build the Jooble request body from shared and source configuration."""
+    search_config = settings["search"]
     request_config = config["request"]
     payload: dict[str, Any] = {
-        "keywords": request_config["keywords"],
-        "location": request_config["location"],
+        "keywords": ", ".join(search_config["keywords"]),
+        "location": ", ".join(search_config["locations"]),
         "page": request_config.get("page", 1),
-        "ResultOnPage": request_config.get("result_on_page", 20),
         "companysearch": request_config.get("companysearch", False),
         "SearchMode": request_config.get("search_mode", 0),
     }
@@ -101,12 +106,17 @@ def save_raw_response(
     return response_path
 
 
-def download(config_path: Path, result_on_page: int | None = None) -> Path:
+def download(
+    config_path: Path,
+    settings_path: Path = DEFAULT_SETTINGS_PATH,
+    result_on_page: int | None = None,
+) -> Path:
     """Download and store one Jooble response."""
     load_dotenv(PROJECT_ROOT / ".env")
     config = load_config(config_path)
+    settings = load_toml(settings_path)
     api_key = get_api_key(config)
-    payload = build_payload(config, result_on_page=result_on_page)
+    payload = build_payload(config, settings, result_on_page=result_on_page)
     endpoint = build_endpoint(config, api_key)
     timeout = config["api"]["timeout_seconds"]
 
@@ -123,16 +133,21 @@ def download(config_path: Path, result_on_page: int | None = None) -> Path:
     return save_raw_response(config, response, payload)
 
 
-def print_dry_run(config_path: Path, result_on_page: int | None = None) -> None:
+def print_dry_run(
+    config_path: Path,
+    settings_path: Path = DEFAULT_SETTINGS_PATH,
+    result_on_page: int | None = None,
+) -> None:
     """Print the configured request without requiring a key or network access."""
     config = load_config(config_path)
+    settings = load_toml(settings_path)
     api_key_env = config["api"]["api_key_env"]
     key_status = "configured" if os.getenv(api_key_env) else "missing"
     print(f"Endpoint: {redact_endpoint(config)}")
     print(f"API key ({api_key_env}): {key_status}")
     print(
         json.dumps(
-            build_payload(config, result_on_page=result_on_page),
+            build_payload(config, settings, result_on_page=result_on_page),
             ensure_ascii=False,
             indent=2,
         )
@@ -147,6 +162,12 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=DEFAULT_CONFIG_PATH,
         help="Path to the source TOML configuration.",
+    )
+    parser.add_argument(
+        "--settings",
+        type=Path,
+        default=DEFAULT_SETTINGS_PATH,
+        help="Path to the shared search settings TOML configuration.",
     )
     parser.add_argument(
         "--dry-run",
@@ -166,9 +187,17 @@ def main() -> int:
     args = parse_args()
     try:
         if args.dry_run:
-            print_dry_run(args.config, result_on_page=args.result_on_page)
+            print_dry_run(
+                args.config,
+                args.settings,
+                result_on_page=args.result_on_page,
+            )
         else:
-            response_path = download(args.config, result_on_page=args.result_on_page)
+            response_path = download(
+                args.config,
+                args.settings,
+                result_on_page=args.result_on_page,
+            )
             print(f"Saved raw response to {response_path}")
     except (OSError, RuntimeError, tomllib.TOMLDecodeError) as error:
         print(f"Error: {error}", file=sys.stderr)

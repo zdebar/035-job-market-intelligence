@@ -1,7 +1,6 @@
 [source]
 id = "jooble-cz"
 country = "CZ"
-enabled = true
 
 [api]
 base_url = "https://cz.jooble.org/api"
@@ -10,8 +9,6 @@ api_key_env = "JOOBLE_API_KEY"
 timeout_seconds = 30
 
 [request]
-keywords = "Data Engineer, AI Engineer"
-location = "Czech Republic"
 page = 1
 companysearch = false
 search_mode = 0

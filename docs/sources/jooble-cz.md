@@ -25,12 +25,19 @@ The API key must never be stored in Git, TOML configuration, logs or raw metadat
 
 ## Request parameters
 
-The initial request is configured in `config/sources/jooble-cz.toml`:
+The shared search criteria are configured in `config/settings.toml`:
+
+```toml
+[search]
+keywords = ["Data Engineer", "AI Engineer"]
+locations = ["Czech Republic"]
+```
+
+Jooble-specific request options are configured in
+`config/sources/jooble-cz.toml`:
 
 ```json
 {
-  "keywords": "Data Engineer, AI Engineer",
-  "location": "Czech Republic",
   "page": 1,
   "companysearch": false,
   "SearchMode": 0
@@ -90,4 +97,25 @@ Download only ten results for a test:
 
 ```bash
 uv run job-market-download-jooble --result-on-page 10
+```
+
+## General ingestion runner
+
+The enabled acquisition sources are listed in `config/ingestion.toml`.
+Run all enabled sources with:
+
+```bash
+uv run job-market-ingest
+```
+
+Preview all configured requests without network access:
+
+```bash
+uv run job-market-ingest --dry-run
+```
+
+Run or preview only one configured source:
+
+```bash
+uv run job-market-ingest --source jooble-cz --dry-run
 ```
