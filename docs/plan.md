@@ -2,15 +2,6 @@
 
 # 1. Project settings
 
-## 1.3 Nastavit Python projekt
-
-- [ ] Inicializovat projekt pomocí `uv`.
-- [ ] Nastavit podporovanou verzi Pythonu.
-- [ ] Vytvořit `pyproject.toml`.
-- [ ] Vytvořit a verzovat `uv.lock`.
-- [ ] Používat `uv run` pro spouštění příkazů.
-- [ ] Oddělit produkční a vývojové závislosti.
-
 ## 1.4 Navrhnout adresářovou strukturu
 
 - [ ] Vytvořit `src/` strukturu pro vlastní Python kód.
