@@ -3,6 +3,7 @@
 1. Evaluate whether proposed plans follow common practices, clean-code principles, simplicity, and the existing codebase’s conventions. If not, explain the concern and offer suitable alternatives.
 2. Clearly distinquish between user's questions and orders. Dont start coding when only asked questions. Wait for explicit order.
 3. I am using "bash" in terminal so preferable use terminal commands in it. But not exclussively.
+4. Be maximally brief in descriptions, README, and chat.
 
 ## Clean Code Principles
 
