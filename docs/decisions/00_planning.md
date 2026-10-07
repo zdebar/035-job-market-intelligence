@@ -30,7 +30,6 @@ Vybrány dle orientačního průzkumu českého trhu Data / AI Engineeringu.
 
 | Fáze | Název                      | Hlavní výsledek                                    |
 | ---- | -------------------------- | -------------------------------------------------- |
-| 1    | Project settings           | Reprodukovatelný Git/Python/Docker projekt         |
 | 2    | Database foundation        | Lokální PostgreSQL a verzované migrace             |
 | 3    | Basic ingestion            | První data stažená z jednoho zdroje                |
 | 4    | Raw storage / Bronze       | Uchované původní payloady pro reprocessing         |
