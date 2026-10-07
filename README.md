@@ -20,6 +20,23 @@ Run all local checks:
 bash scripts/check.sh
 ```
 
+## Branch guide
+
+- `main` — stable version
+- `feature/<name>` — new functionality
+- `fix/<name>` — bug fixes
+- `docs/<name>` — documentation changes
+
+Start new work from the latest `main`:
+
+```bash
+git switch main
+git pull
+git switch -c feature/<name>
+```
+
+Run checks before committing. Merge completed work into `main` through a pull request.
+
 ## Project structure
 
 ```text
