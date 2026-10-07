@@ -15,6 +15,7 @@ dependencies = [
 
 [project.scripts]
 job-market-intelligence = "job_market_intelligence:main"
+job-market-download-jooble = "job_market_intelligence.ingestion.sources.jooble_cz:main"
 
 [build-system]
 requires = ["uv_build>=0.12.23,<0.13.0"]

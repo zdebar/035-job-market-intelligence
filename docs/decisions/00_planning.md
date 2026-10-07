@@ -30,8 +30,6 @@ Vybrány dle orientačního průzkumu českého trhu Data / AI Engineeringu.
 
 | Fáze | Název                      | Hlavní výsledek                                    |
 | ---- | -------------------------- | -------------------------------------------------- |
-| 2    | Database foundation        | Lokální PostgreSQL a verzované migrace             |
-| 3    | Basic ingestion            | První data stažená z jednoho zdroje                |
 | 4    | Raw storage / Bronze       | Uchované původní payloady pro reprocessing         |
 | 5    | Cleaning / Silver          | Vyčištěná a normalizovaná data                     |
 | 6    | SQL analytics              | První užitečné analytické otázky a reporty         |
