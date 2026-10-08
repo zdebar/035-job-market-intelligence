@@ -20,6 +20,49 @@ Run all local checks:
 bash scripts/check.sh
 ```
 
+## Data sources
+
+Configured:
+
+- Greenhouse Job Board API — public GET API, JSON, full job content
+
+Planned Czech sources:
+
+- Jobstack.it, Jobs.cz, Prace.cz, Pracomat.cz, ITjobs.cz
+- Job-it.cz, StartupJobs.cz, No Fluff Jobs CZ
+
+Planned international sources:
+
+- LinkedIn Jobs, Indeed, Glassdoor, Wellfound
+- EURES, EuroTechJobs
+
+The detailed source list is in [docs/decisions/03_basic_ingestion.md](docs/decisions/03_basic_ingestion.md).
+
+## Data acquisition
+
+Shared search criteria are configured in `config/settings.toml`.
+The enabled sources and their configurations are defined in `config/ingestion.toml`.
+
+Run all enabled sources:
+
+```bash
+uv run job-market-ingest
+```
+
+Preview requests without network access:
+
+```bash
+uv run job-market-ingest --dry-run
+```
+
+Run or preview only Greenhouse:
+
+```bash
+uv run job-market-ingest --source greenhouse --dry-run
+```
+
+Greenhouse uses public board tokens and does not require an API key or password.
+
 ## Branch guide
 
 - `main` — stable version

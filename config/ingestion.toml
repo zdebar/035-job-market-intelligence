@@ -1,0 +1,7 @@
+[settings]
+path = "config/settings.toml"
+
+[[sources]]
+id = "greenhouse"
+enabled = true
+config_path = "config/sources/greenhouse.toml"
