@@ -2,6 +2,6 @@
 path = "config/settings.toml"
 
 [[sources]]
-id = "jooble-cz"
+id = "greenhouse"
 enabled = true
-config_path = "config/sources/jooble-cz.toml"
+config_path = "config/sources/greenhouse.toml"

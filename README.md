@@ -24,7 +24,7 @@ bash scripts/check.sh
 
 Configured:
 
-- Jooble CZ — REST API, JSON, API key
+- Greenhouse Job Board API — public GET API, JSON, full job content
 
 Planned Czech sources:
 
@@ -49,29 +49,19 @@ Run all enabled sources:
 uv run job-market-ingest
 ```
 
-Preview requests without using the network or API keys:
+Preview requests without network access:
 
 ```bash
 uv run job-market-ingest --dry-run
 ```
 
-Run or preview only one source:
+Run or preview only Greenhouse:
 
 ```bash
-uv run job-market-ingest --source jooble-cz --dry-run
+uv run job-market-ingest --source greenhouse --dry-run
 ```
 
-Run the Jooble adapter directly:
-
-```bash
-uv run job-market-download-jooble --dry-run
-```
-
-For a small test request, limit the result count:
-
-```bash
-uv run job-market-download-jooble --dry-run --result-on-page 10
-```
+Greenhouse uses public board tokens and does not require an API key or password.
 
 ## Branch guide
 

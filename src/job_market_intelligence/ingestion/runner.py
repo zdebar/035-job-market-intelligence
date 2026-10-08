@@ -8,24 +8,18 @@ import tomllib
 from collections.abc import Callable
 from pathlib import Path
 
-from job_market_intelligence.ingestion.config import load_toml
-from job_market_intelligence.ingestion.sources import jooble_cz
+from job_market_intelligence.ingestion.config import load_toml, resolve_project_path
+from job_market_intelligence.ingestion.sources import greenhouse
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_CONFIG_PATH = PROJECT_ROOT / "config" / "ingestion.toml"
 
-DownloadHandler = Callable[[Path, Path], Path]
+DownloadHandler = Callable[[Path, Path], list[Path]]
 DryRunHandler = Callable[[Path, Path], None]
 
 SOURCE_HANDLERS: dict[str, tuple[DownloadHandler, DryRunHandler]] = {
-    "jooble-cz": (jooble_cz.download, jooble_cz.print_dry_run),
+    "greenhouse": (greenhouse.download, greenhouse.print_dry_run),
 }
-
-
-def resolve_project_path(path_value: str | Path) -> Path:
-    """Resolve a project-relative path from the runner configuration."""
-    path = Path(path_value)
-    return path if path.is_absolute() else PROJECT_ROOT / path
 
 
 def run_ingestion(
@@ -36,6 +30,7 @@ def run_ingestion(
     """Run enabled configured sources and return saved response paths."""
     runner_config = load_toml(config_path)
     settings_path = resolve_project_path(
+        PROJECT_ROOT,
         runner_config.get("settings", {}).get("path", "config/settings.toml")
     )
     configured_sources = runner_config.get("sources", [])
@@ -60,15 +55,16 @@ def run_ingestion(
         if handlers is None:
             raise RuntimeError(f"No adapter is registered for source: {source_id}")
 
-        source_config_path = resolve_project_path(source_entry["config_path"])
+        source_config_path = resolve_project_path(PROJECT_ROOT, source_entry["config_path"])
         download_handler, dry_run_handler = handlers
         if dry_run:
             print(f"Source: {source_id}")
             dry_run_handler(source_config_path, settings_path)
         else:
-            response_path = download_handler(source_config_path, settings_path)
-            saved_paths.append(response_path)
-            print(f"[{source_id}] Saved raw response to {response_path}")
+            response_paths = download_handler(source_config_path, settings_path)
+            saved_paths.extend(response_paths)
+            for response_path in response_paths:
+                print(f"[{source_id}] Saved raw response to {response_path}")
 
     return saved_paths
 

@@ -34,11 +34,23 @@ class HttpClient:
         self.timeout = timeout
         self.headers = {"Accept": "application/json", **(headers or {})}
 
-    def post_json(self, url: str, payload: Mapping[str, Any]) -> HttpResponse:
-        """POST a JSON payload and return a transport-independent response."""
+    def request(
+        self,
+        method: str,
+        url: str,
+        *,
+        params: Mapping[str, Any] | None = None,
+        json_payload: Mapping[str, Any] | None = None,
+    ) -> HttpResponse:
+        """Send an HTTP request and return a transport-independent response."""
         try:
             with httpx.Client(timeout=self.timeout, headers=self.headers) as client:
-                response = client.post(url, json=payload)
+                response = client.request(
+                    method,
+                    url,
+                    params=params,
+                    json=json_payload,
+                )
                 response.raise_for_status()
         except httpx.HTTPError as error:
             raise HttpRequestError(f"HTTP request failed: {error}") from error
@@ -48,3 +60,16 @@ class HttpClient:
             headers=dict(response.headers),
             content=response.content,
         )
+
+    def get(
+        self,
+        url: str,
+        *,
+        params: Mapping[str, Any] | None = None,
+    ) -> HttpResponse:
+        """Send a GET request."""
+        return self.request("GET", url, params=params)
+
+    def post_json(self, url: str, payload: Mapping[str, Any]) -> HttpResponse:
+        """POST a JSON payload and return a transport-independent response."""
+        return self.request("POST", url, json_payload=payload)
