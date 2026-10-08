@@ -1,0 +1,50 @@
+# Canonical roles and source-text aliases.
+# The loader maps an alias to name and then resolves roles.name in PostgreSQL.
+
+[[roles]]
+name = 'Data Engineer'
+aliases = ['Data Engineer', 'Data Engineering']
+
+[[roles]]
+name = 'AI Engineer'
+aliases = ['AI Engineer', 'Artificial Intelligence Engineer']
+
+[[roles]]
+name = 'Machine Learning Engineer'
+aliases = ['Machine Learning Engineer', 'ML Engineer']
+
+[[roles]]
+name = 'MLOps Engineer'
+aliases = ['MLOps Engineer', 'MLOps']
+
+[[roles]]
+name = 'Data Scientist'
+aliases = ['Data Scientist']
+
+[[roles]]
+name = 'Analytics Engineer'
+aliases = ['Analytics Engineer', 'Analytics Engineering']
+
+[[roles]]
+name = 'Data Analyst'
+aliases = ['Data Analyst']
+
+[[roles]]
+name = 'Software Engineer'
+aliases = ['Software Engineer']
+
+[[roles]]
+name = 'Backend Engineer'
+aliases = ['Backend Engineer', 'Back-end Engineer', 'Backend Developer']
+
+[[roles]]
+name = 'Platform Engineer'
+aliases = ['Platform Engineer']
+
+[[roles]]
+name = 'DevOps Engineer'
+aliases = ['DevOps Engineer', 'DevOps']
+
+[[roles]]
+name = 'BI Developer'
+aliases = ['BI Developer', 'Business Intelligence Developer']

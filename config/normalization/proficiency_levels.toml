@@ -1,0 +1,17 @@
+# Canonical skill proficiency levels and source-text aliases.
+
+[[proficiency_levels]]
+name = 'Basic'
+aliases = ['Basic', 'Basic knowledge', 'Beginner', 'Základní', 'Zakladni', 'Základní znalost', 'Zakladni znalost', 'Začátečník', 'Zacatecnik']
+
+[[proficiency_levels]]
+name = 'Intermediate'
+aliases = ['Intermediate', 'Intermediate knowledge', 'Competent', 'Mírně pokročilý', 'Mirne pokrocily', 'Středně pokročilý', 'Stredne pokrocily']
+
+[[proficiency_levels]]
+name = 'Advanced'
+aliases = ['Advanced', 'Advanced knowledge', 'Proficient', 'Pokročilý', 'Pokrocily', 'Pokročilá znalost', 'Pokrocila znalost']
+
+[[proficiency_levels]]
+name = 'Expert'
+aliases = ['Expert', 'Expertise', 'Advanced expertise', 'Expertní', 'Expertni', 'Expertní znalost', 'Expertni znalost', 'Velmi pokročilý', 'Velmi pokrocily']

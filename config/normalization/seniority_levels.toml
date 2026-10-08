@@ -1,0 +1,29 @@
+# Canonical seniority levels and source-text aliases.
+
+[[seniority_levels]]
+name = 'Intern'
+aliases = ['Intern', 'Internship', 'Stážista', 'Stazista', 'Stáž', 'Staz']
+
+[[seniority_levels]]
+name = 'Junior'
+aliases = ['Junior', 'Entry-level', 'Entry level', 'Začátečník', 'Zacatecnik', 'Juniorní', 'Juniorni']
+
+[[seniority_levels]]
+name = 'Mid-level'
+aliases = ['Mid-level', 'Mid level', 'Mid', 'Medior', 'Mediorní', 'Mediorni']
+
+[[seniority_levels]]
+name = 'Senior'
+aliases = ['Senior', 'Sr', 'Sr.', 'Seniorní', 'Seniorni']
+
+[[seniority_levels]]
+name = 'Lead'
+aliases = ['Lead', 'Team Lead', 'Vedoucí', 'Vedouci']
+
+[[seniority_levels]]
+name = 'Staff'
+aliases = ['Staff', 'Staff Engineer']
+
+[[seniority_levels]]
+name = 'Principal'
+aliases = ['Principal', 'Principal Engineer', 'Principální', 'Principalni']

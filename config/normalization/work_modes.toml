@@ -1,0 +1,13 @@
+# Canonical work modes and source-text aliases.
+
+[[work_modes]]
+name = 'Remote'
+aliases = ['Remote', 'Fully remote', 'Remote work', 'Work from home', 'Home office', 'Na dálku', 'Na dalku', 'Práce z domova', 'Prace z domova', 'Práce na dálku', 'Prace na dalku']
+
+[[work_modes]]
+name = 'Hybrid'
+aliases = ['Hybrid', 'Hybrid work', 'Hybridní', 'Hybridni', 'Kombinovaná práce', 'Kombinovana prace']
+
+[[work_modes]]
+name = 'On-site'
+aliases = ['On-site', 'On site', 'Onsite', 'Office-based', 'Office based', 'V kanceláři', 'V kancelari', 'Na pracovišti', 'Na pracovisti']

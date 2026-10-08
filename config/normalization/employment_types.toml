@@ -1,0 +1,21 @@
+# Canonical employment types and source-text aliases.
+
+[[employment_types]]
+name = 'Full-time'
+aliases = ['Full-time', 'Full time', 'Fulltime', 'Plný úvazek', 'Plny uvazek', 'Práce na plný úvazek', 'Prace na plny uvazek']
+
+[[employment_types]]
+name = 'Part-time'
+aliases = ['Part-time', 'Part time', 'Parttime', 'Částečný úvazek', 'Castecny uvazek', 'Práce na částečný úvazek', 'Prace na castecny uvazek']
+
+[[employment_types]]
+name = 'Contract'
+aliases = ['Contract', 'Contractor', 'Freelance', 'Contractní spolupráce', 'Contractni spoluprace', 'Živnost', 'Zivnost', 'OSVČ', 'OSVC']
+
+[[employment_types]]
+name = 'Internship'
+aliases = ['Internship', 'Intern', 'Stáž', 'Staz', 'Stážistické místo', 'Stazisticke misto']
+
+[[employment_types]]
+name = 'Working student'
+aliases = ['Working student', 'Working-student', 'Student job', 'Studentská práce', 'Studentska prace', 'Brigáda pro studenty', 'Brigada pro studenty']

@@ -1,0 +1,13 @@
+# Canonical skill requirement types and source-text aliases.
+
+[[requirement_types]]
+name = 'Required'
+aliases = ['Required', 'Must-have', 'Must have', 'Essential', 'Mandatory', 'Požadováno', 'Pozadovano', 'Nutné', 'Nutne', 'Povinné', 'Povinne']
+
+[[requirement_types]]
+name = 'Preferred'
+aliases = ['Preferred', 'Preferred qualification', 'Preferováno', 'Preferovano', 'Preferované', 'Preferovane', 'Výhodou', 'Vyhodou']
+
+[[requirement_types]]
+name = 'Nice to have'
+aliases = ['Nice to have', 'Nice-to-have', 'Bonus', 'Optional', 'Plus', 'Výhodou navíc', 'Vyhodou navic', 'Není podmínkou', 'Neni podminkou']
