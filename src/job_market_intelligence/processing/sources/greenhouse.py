@@ -7,48 +7,21 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
-from job_market_intelligence.processing.aliases import AliasDictionary
 from job_market_intelligence.processing.extraction import extract_hours
 from job_market_intelligence.processing.models import (
     EmploymentOption,
     ParsedJobPosting,
     SkillRequirement,
 )
+from job_market_intelligence.processing.normalization import NormalizationDictionaries
 from job_market_intelligence.processing.utils import optional_text, parse_datetime
-
-
-class GreenhouseNormalizer:
-    """Normalize Greenhouse values with project TOML dictionaries."""
-
-    def __init__(self, project_root: Path) -> None:
-        normalization_directory = project_root / "config" / "normalization"
-        self.companies = AliasDictionary.from_file(
-            normalization_directory / "companies.toml", "companies"
-        )
-        self.roles = AliasDictionary.from_file(normalization_directory / "roles.toml", "roles")
-        self.skills = AliasDictionary.from_file(normalization_directory / "skills.toml", "skills")
-        self.seniority_levels = AliasDictionary.from_file(
-            normalization_directory / "seniority_levels.toml", "seniority_levels"
-        )
-        self.work_modes = AliasDictionary.from_file(
-            normalization_directory / "work_modes.toml", "work_modes"
-        )
-        self.locations = AliasDictionary.from_file(
-            normalization_directory / "locations.toml", "locations"
-        )
-        self.employment_relations = AliasDictionary.from_file(
-            normalization_directory / "employment_relations.toml", "employment_relations"
-        )
-        self.workloads = AliasDictionary.from_file(
-            normalization_directory / "workloads.toml", "workloads"
-        )
 
 
 class GreenhouseParser:
     """Parse one stored Greenhouse raw run."""
 
     def __init__(self, project_root: Path) -> None:
-        self.normalizer = GreenhouseNormalizer(project_root)
+        self.normalizer = NormalizationDictionaries.from_project_root(project_root)
 
     def parse(
         self,
