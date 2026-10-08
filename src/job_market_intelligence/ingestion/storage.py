@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import uuid
 from collections.abc import Mapping
@@ -17,9 +18,11 @@ def save_raw_response(
     project_root: Path,
     storage_directory: str | Path,
     source_id: str,
+    method: str,
     endpoint: str,
     response: HttpResponse,
     request: Mapping[str, Any],
+    record_count: int | None = None,
     extra_metadata: Mapping[str, Any] | None = None,
 ) -> Path:
     """Save the original response body and non-secret metadata."""
@@ -40,12 +43,17 @@ def save_raw_response(
     response_path.write_bytes(response.content)
 
     metadata: dict[str, Any] = {
+        "run_id": run_id,
         "source_id": source_id,
         "retrieved_at": retrieved_at.isoformat(),
+        "http_method": method,
         "http_status": response.status_code,
         "content_type": response.headers.get("content-type"),
         "endpoint": endpoint,
         "request": dict(request),
+        "payload_sha256": hashlib.sha256(response.content).hexdigest(),
+        "payload_size_bytes": len(response.content),
+        "record_count": record_count,
     }
     if extra_metadata:
         metadata["context"] = dict(extra_metadata)

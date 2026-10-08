@@ -65,20 +65,27 @@ def download(config_path: Path, settings_path: Path = DEFAULT_SETTINGS_PATH) -> 
             raise RuntimeError(f"Greenhouse request failed for {company}: {error}") from error
 
         try:
-            response.json()
+            payload = response.json()
         except json.JSONDecodeError as error:
             raise RuntimeError(
                 f"Greenhouse returned a response that is not valid JSON for {company}."
             ) from error
+        record_count = (
+            len(payload["jobs"])
+            if isinstance(payload, dict) and isinstance(payload.get("jobs"), list)
+            else None
+        )
 
         saved_paths.append(
             save_raw_response(
                 project_root=PROJECT_ROOT,
                 storage_directory=config["storage"]["directory"],
                 source_id=source_id,
+                method="GET",
                 endpoint=endpoint,
                 response=response,
                 request=params,
+                record_count=record_count,
                 extra_metadata={
                     "company": company,
                     "board_token": board_token,
