@@ -1,2 +1,9 @@
 # Canonical companies and source-text aliases.
-# Add companies after selecting the first Greenhouse boards.
+
+[[companies]]
+name = 'Mews'
+aliases = ['Mews']
+
+[[companies]]
+name = 'Second Foundation Tech'
+aliases = ['Second Foundation Tech', 'Second Foundation']

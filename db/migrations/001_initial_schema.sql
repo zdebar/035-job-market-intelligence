@@ -1,12 +1,12 @@
 BEGIN;
 
--- Registered ingestion sources. Example: Greenhouse.
+-- Source boards used for ingestion. Example: Mews or Second Foundation Tech.
 CREATE TABLE sources (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name TEXT NOT NULL UNIQUE
 );
 
--- Companies used by normalized job postings. Example: Microsoft.
+-- Companies used by normalized job postings. Example: Mews.
 CREATE TABLE companies (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name TEXT NOT NULL UNIQUE
@@ -45,14 +45,20 @@ CREATE TABLE requirement_types (
     sort_order SMALLINT NOT NULL UNIQUE
 );
 
--- Work modes. Example: Remote.
-CREATE TABLE work_modes (
+-- Legal or contractual engagement relations. Example: Employee or Self-employed.
+CREATE TABLE employment_relations (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name TEXT NOT NULL UNIQUE
 );
 
--- Employment types. Example: Full-time.
-CREATE TABLE employment_types (
+-- Workload categories. Example: Full-time or Part-time.
+CREATE TABLE workloads (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+);
+
+-- Work modes. Example: Remote.
+CREATE TABLE work_modes (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name TEXT NOT NULL UNIQUE
 );
@@ -63,7 +69,7 @@ CREATE TABLE locations (
     name TEXT NOT NULL UNIQUE
 );
 
--- One normalized record for one posting from one source.
+-- One normalized record for one posting from one source board.
 -- The complete original advertisement is stored in raw_advertisement.
 CREATE TABLE job_postings (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -72,18 +78,48 @@ CREATE TABLE job_postings (
     company_id BIGINT REFERENCES companies(id),
     role_id BIGINT REFERENCES roles(id),
     seniority_level_id BIGINT REFERENCES seniority_levels(id),
-    work_mode_id BIGINT REFERENCES work_modes(id),
-    employment_type_id BIGINT REFERENCES employment_types(id),
-    location_id BIGINT REFERENCES locations(id),
     raw_advertisement JSONB NOT NULL,
     source_url TEXT,
     source_published_at TIMESTAMPTZ,
     source_updated_at TIMESTAMPTZ,
     retrieved_at TIMESTAMPTZ NOT NULL,
+    last_seen_at TIMESTAMPTZ NOT NULL,
+    status TEXT NOT NULL DEFAULT 'active',
     normalization_version TEXT NOT NULL DEFAULT 'v1',
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    UNIQUE (source_id, source_job_id)
+    UNIQUE (source_id, source_job_id),
+    CHECK (status IN ('active', 'inactive', 'unknown'))
+);
+
+-- Locations offered by a posting. Example: Prague and Brno.
+CREATE TABLE job_posting_locations (
+    job_posting_id BIGINT NOT NULL REFERENCES job_postings(id) ON DELETE CASCADE,
+    location_id BIGINT NOT NULL REFERENCES locations(id),
+    PRIMARY KEY (job_posting_id, location_id)
+);
+
+-- Work modes offered by a posting. Example: Remote and Hybrid.
+CREATE TABLE job_posting_work_modes (
+    job_posting_id BIGINT NOT NULL REFERENCES job_postings(id) ON DELETE CASCADE,
+    work_mode_id BIGINT NOT NULL REFERENCES work_modes(id),
+    PRIMARY KEY (job_posting_id, work_mode_id)
+);
+
+-- Employment alternatives offered by a posting.
+-- Example: Employee full-time or Self-employed full-time.
+CREATE TABLE job_posting_employment_options (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    job_posting_id BIGINT NOT NULL REFERENCES job_postings(id) ON DELETE CASCADE,
+    employment_relation_id BIGINT REFERENCES employment_relations(id),
+    workload_id BIGINT REFERENCES workloads(id),
+    hours_min NUMERIC(7, 2),
+    hours_max NUMERIC(7, 2),
+    hours_period TEXT,
+    CHECK (hours_min IS NULL OR hours_min >= 0),
+    CHECK (hours_max IS NULL OR hours_max >= 0),
+    CHECK (hours_min IS NULL OR hours_max IS NULL OR hours_max >= hours_min),
+    CHECK (hours_period IS NULL OR hours_period IN ('day', 'week', 'month', 'year'))
 );
 
 -- Skills assigned to a posting. Example: Python is required at an advanced level.
@@ -105,7 +141,6 @@ CREATE TABLE canonical_jobs (
 );
 
 -- Links source postings to their logical canonical job.
--- Example: Greenhouse and another source can point to one canonical job.
 CREATE TABLE job_posting_sources (
     canonical_job_id BIGINT NOT NULL REFERENCES canonical_jobs(id) ON DELETE CASCADE,
     job_posting_id BIGINT NOT NULL REFERENCES job_postings(id) ON DELETE CASCADE,
@@ -116,7 +151,13 @@ CREATE TABLE job_posting_sources (
 CREATE INDEX job_postings_source_id_idx ON job_postings (source_id);
 CREATE INDEX job_postings_company_id_idx ON job_postings (company_id);
 CREATE INDEX job_postings_role_id_idx ON job_postings (role_id);
-CREATE INDEX job_postings_retrieved_at_idx ON job_postings (retrieved_at);
+CREATE INDEX job_postings_last_seen_at_idx ON job_postings (last_seen_at);
+CREATE INDEX job_posting_locations_location_id_idx
+    ON job_posting_locations (location_id);
+CREATE INDEX job_posting_work_modes_work_mode_id_idx
+    ON job_posting_work_modes (work_mode_id);
+CREATE INDEX job_posting_employment_options_relation_id_idx
+    ON job_posting_employment_options (employment_relation_id);
 CREATE INDEX job_skill_requirements_skill_id_idx
     ON job_skill_requirements (skill_id);
 CREATE INDEX job_posting_sources_canonical_job_id_idx

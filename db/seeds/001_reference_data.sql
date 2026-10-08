@@ -1,7 +1,15 @@
 BEGIN;
 
 INSERT INTO sources (name)
-VALUES ('Greenhouse')
+VALUES
+    ('Mews'),
+    ('Second Foundation Tech')
+ON CONFLICT (name) DO NOTHING;
+
+INSERT INTO companies (name)
+VALUES
+    ('Mews'),
+    ('Second Foundation Tech')
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO roles (name)
@@ -98,6 +106,21 @@ VALUES
     ('Nice to have', 30)
 ON CONFLICT (name) DO NOTHING;
 
+INSERT INTO employment_relations (name)
+VALUES
+    ('Employee'),
+    ('DPP'),
+    ('DPČ'),
+    ('Self-employed')
+ON CONFLICT (name) DO NOTHING;
+
+INSERT INTO workloads (name)
+VALUES
+    ('Full-time'),
+    ('Part-time'),
+    ('Unspecified')
+ON CONFLICT (name) DO NOTHING;
+
 INSERT INTO work_modes (name)
 VALUES
     ('Remote'),
@@ -105,13 +128,12 @@ VALUES
     ('On-site')
 ON CONFLICT (name) DO NOTHING;
 
-INSERT INTO employment_types (name)
+INSERT INTO locations (name)
 VALUES
-    ('Full-time'),
-    ('Part-time'),
-    ('Contract'),
-    ('Internship'),
-    ('Working student')
+    ('Czechia'),
+    ('Prague, Czechia'),
+    ('Brno, Czechia'),
+    ('Ostrava, Czechia')
 ON CONFLICT (name) DO NOTHING;
 
 COMMIT;
