@@ -128,14 +128,21 @@ def _run_database_processing(
 
     with psycopg.connect(database_url) as connection:
         repository = ProcessingRepository(connection)
-        for source_entry in configured_sources:
-            if _should_process_source(source_entry, selected_source_ids):
-                _process_source(
-                    source_entry,
-                    project_root,
-                    registry,
+        for source_entry in _active_sources(configured_sources, selected_source_ids):
+            source_id, parser, run_directories = _source_context(
+                source_entry,
+                project_root,
+                registry,
+            )
+            for run_directory in run_directories:
+                summary.discovered += 1
+                _process_run(
                     repository,
                     connection,
+                    parser,
+                    source_id,
+                    run_directory,
+                    project_root,
                     summary,
                 )
 
@@ -150,14 +157,22 @@ def _should_process_source(
     )
 
 
-def _process_source(
+def _active_sources(
+    configured_sources: list[dict[str, Any]],
+    selected_source_ids: set[str],
+) -> list[dict[str, Any]]:
+    return [
+        source_entry
+        for source_entry in configured_sources
+        if _should_process_source(source_entry, selected_source_ids)
+    ]
+
+
+def _source_context(
     source_entry: dict[str, Any],
     project_root: Path,
     registry: dict[str, RawRunParser],
-    repository: ProcessingRepository,
-    connection: psycopg.Connection[Any],
-    summary: ProcessingSummary,
-) -> None:
+) -> tuple[str, RawRunParser, list[Path]]:
     source_id = source_entry["id"]
     parser = registry.get(source_id)
     if parser is None:
@@ -168,17 +183,7 @@ def _process_source(
         project_root,
         source_config["storage"]["directory"],
     )
-    for run_directory in discover_raw_runs(storage_directory):
-        summary.discovered += 1
-        _process_run(
-            repository,
-            connection,
-            parser,
-            source_id,
-            run_directory,
-            project_root,
-            summary,
-        )
+    return source_id, parser, discover_raw_runs(storage_directory)
 
 
 def _run_dry_run(
@@ -188,21 +193,13 @@ def _run_dry_run(
     registry: dict[str, RawRunParser],
     summary: ProcessingSummary,
 ) -> ProcessingSummary:
-    for source_entry in configured_sources:
-        source_id = source_entry["id"]
-        if selected_source_ids and source_id not in selected_source_ids:
-            continue
-        if not source_entry.get("enabled", True):
-            continue
-        parser = registry.get(source_id)
-        if parser is None:
-            raise RuntimeError(f"No parser is registered for source: {source_id}")
-        source_config = load_toml(resolve_project_path(project_root, source_entry["config_path"]))
-        storage_directory = resolve_project_path(
+    for source_entry in _active_sources(configured_sources, selected_source_ids):
+        source_id, _, run_directories = _source_context(
+            source_entry,
             project_root,
-            source_config["storage"]["directory"],
+            registry,
         )
-        for run_directory in discover_raw_runs(storage_directory):
+        for run_directory in run_directories:
             summary.discovered += 1
             print(f"[{source_id}] {run_directory}")
     return summary

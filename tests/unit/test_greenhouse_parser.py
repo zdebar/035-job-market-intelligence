@@ -1,10 +1,8 @@
 from decimal import Decimal
 from pathlib import Path
 
-from job_market_intelligence.processing.sources.greenhouse import (
-    GreenhouseParser,
-    extract_hours,
-)
+from job_market_intelligence.processing.extraction import extract_hours
+from job_market_intelligence.processing.sources.greenhouse import GreenhouseParser
 
 PROJECT_ROOT = Path(__file__).parents[2]
 

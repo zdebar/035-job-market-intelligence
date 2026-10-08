@@ -3,29 +3,18 @@
 from __future__ import annotations
 
 import json
-import re
 from collections.abc import Mapping
-from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
 from job_market_intelligence.processing.aliases import AliasDictionary
+from job_market_intelligence.processing.extraction import extract_hours
 from job_market_intelligence.processing.models import (
     EmploymentOption,
     ParsedJobPosting,
     SkillRequirement,
 )
 from job_market_intelligence.processing.utils import optional_text, parse_datetime
-
-HOURS_PATTERN = re.compile(
-    r"(?P<minimum>\d{1,3})\s*"
-    r"(?:(?:[-–—]|\bto\b|\baž\b)\s*(?P<maximum>\d{1,3}))?\s*"
-    r"(?:hours?|hodin|h)\b"
-    r"(?:\s*(?:per|/|a|za)\s*)?"
-    r"\s*(?P<period>week|weekly|týden|týdně|month|monthly|měsíc|měsíčně|"
-    r"day|daily|denně|year|annually|rok|ročně)?",
-    flags=re.IGNORECASE,
-)
 
 
 class GreenhouseNormalizer:
@@ -172,37 +161,8 @@ class GreenhouseParser:
                 hours_min=hours_min,
                 hours_max=hours_max,
                 hours_period=hours_period,
-            ),
+            )
         ]
-
-
-def extract_hours(text: str) -> tuple[Decimal | None, Decimal | None, str | None]:
-    """Extract the first explicit workload range from text."""
-    match = HOURS_PATTERN.search(text)
-    if not match:
-        return None, None, None
-
-    minimum = Decimal(match.group("minimum"))
-    maximum_text = match.group("maximum")
-    maximum = Decimal(maximum_text) if maximum_text else minimum
-    period = normalize_hours_period(match.group("period"))
-    return minimum, maximum, period
-
-
-def normalize_hours_period(value: str | None) -> str | None:
-    """Map source workload units to database values."""
-    if not value:
-        return None
-    normalized = value.casefold()
-    if normalized in {"week", "weekly", "týden", "týdně"}:
-        return "week"
-    if normalized in {"month", "monthly", "měsíc", "měsíčně"}:
-        return "month"
-    if normalized in {"day", "daily", "denně"}:
-        return "day"
-    if normalized in {"year", "annually", "rok", "ročně"}:
-        return "year"
-    return None
 
 
 def _metadata_values(job: Mapping[str, Any], field_name: str) -> list[str]:
