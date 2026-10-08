@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import ssl
 from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any
@@ -32,6 +33,7 @@ class HttpClient:
 
     def __init__(self, timeout: float, headers: Mapping[str, str] | None = None) -> None:
         self.timeout = timeout
+        self.ssl_context = ssl.create_default_context()
         self.headers = {"Accept": "application/json", **(headers or {})}
 
     def request(
@@ -44,7 +46,11 @@ class HttpClient:
     ) -> HttpResponse:
         """Send an HTTP request and return a transport-independent response."""
         try:
-            with httpx.Client(timeout=self.timeout, headers=self.headers) as client:
+            with httpx.Client(
+                timeout=self.timeout,
+                headers=self.headers,
+                verify=self.ssl_context,
+            ) as client:
                 response = client.request(
                     method,
                     url,
