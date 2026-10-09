@@ -10,7 +10,7 @@ Python · `uv` · PostgreSQL · Docker · Azure · Databricks · Power BI
 
 ```bash
 uv sync
-cp .env.example .env
+test -f .env || cp .env.example .env
 uv run job-market-intelligence
 ```
 
