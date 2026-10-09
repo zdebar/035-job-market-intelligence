@@ -94,6 +94,15 @@ Run all SQL data-quality checks:
 uv run job-market-quality
 ```
 
+SQL analytics reports are in sql/reports/. Run a report against the local
+database, for example:
+
+```bash
+docker compose exec -T postgres \
+  sh -c 'psql -U $POSTGRES_USER -d $POSTGRES_DB' \
+  < sql/reports/001_active_jobs_by_company.sql
+```
+
 ## Branch guide
 
 - `main` — stable version
