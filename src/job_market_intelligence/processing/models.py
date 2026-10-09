@@ -33,7 +33,6 @@ class EmploymentOption:
 class CompensationOption:
     """One salary range offered for a posting."""
 
-    employment_relation_name: str | None = None
     salary_min: Decimal | None = None
     salary_max: Decimal | None = None
     salary_currency: str | None = None

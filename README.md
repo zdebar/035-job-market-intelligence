@@ -65,12 +65,12 @@ Greenhouse uses public board tokens and does not require an API key or password.
 
 ## Raw parsing
 
-Apply the next migration to an existing database that already has `001` and `002`:
+Apply the next migration to an existing database that already has `001`, `002` and `003`:
 
 ```bash
 docker compose exec -T postgres \
   sh -c 'psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"' \
-  < db/migrations/003_compensation_and_hours_validation.sql
+  < db/migrations/004_simplify_compensation.sql
 ```
 
 Parse all new raw runs into PostgreSQL:

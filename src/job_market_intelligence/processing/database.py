@@ -254,25 +254,19 @@ class ProcessingRepository:
             )
 
         for compensation in record.compensation_options:
-            employment_relation_id = self._optional_id(
-                "employment_relations",
-                compensation.employment_relation_name,
-            )
             self.connection.execute(
                 """
                 INSERT INTO job_posting_compensations (
                     job_posting_id,
-                    employment_relation_id,
                     salary_min,
                     salary_max,
                     salary_currency,
                     salary_period
                 )
-                VALUES (%s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s)
                 """,
                 (
                     job_posting_id,
-                    employment_relation_id,
                     compensation.salary_min,
                     compensation.salary_max,
                     compensation.salary_currency,
