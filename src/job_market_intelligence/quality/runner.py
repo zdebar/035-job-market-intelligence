@@ -60,7 +60,8 @@ def _run_check(
     try:
         sql = check_path.read_text(encoding="utf-8")
         with connection.transaction():
-            connection.execute(SQL(cast(LiteralString, sql)))
+            result = connection.execute(SQL(cast(LiteralString, sql)))
+            _print_result(result)
     except (OSError, psycopg.Error) as error:
         summary.failed += 1
         print(f"[FAIL] {check_path}: {error}", file=sys.stderr)
@@ -68,6 +69,15 @@ def _run_check(
 
     summary.passed += 1
     print(f"[PASS] {check_path}")
+
+
+def _print_result(result: psycopg.Cursor) -> None:
+    if result.description is None:
+        return
+    columns = [column.name for column in result.description]
+    print("  " + " | ".join(columns))
+    for row in result.fetchall():
+        print("  " + " | ".join(str(value) for value in row))
 
 
 def parse_args() -> argparse.Namespace:

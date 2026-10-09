@@ -5,3 +5,13 @@ path = "config/settings.toml"
 id = "greenhouse"
 enabled = true
 config_path = "config/sources/greenhouse.toml"
+
+[[sources]]
+id = "lever"
+enabled = true
+config_path = "config/sources/lever.toml"
+
+[[sources]]
+id = "ashby"
+enabled = true
+config_path = "config/sources/ashby.toml"

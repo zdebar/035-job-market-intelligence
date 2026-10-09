@@ -10,12 +10,10 @@ def test_ingestion_configuration_lists_greenhouse() -> None:
     config = load_toml(CONFIG_PATH)
 
     assert config["settings"]["path"] == "config/settings.toml"
-    assert config["sources"] == [
-        {
-            "id": "greenhouse",
-            "enabled": True,
-            "config_path": "config/sources/greenhouse.toml",
-        }
+    assert [source["id"] for source in config["sources"]] == [
+        "greenhouse",
+        "lever",
+        "ashby",
     ]
 
 

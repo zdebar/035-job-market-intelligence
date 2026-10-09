@@ -1,0 +1,17 @@
+[source]
+id = 'lever'
+
+[api]
+base_url = 'https://api.lever.co/v0/postings'
+documentation_url = 'https://hire.lever.co/developer/support'
+timeout_seconds = 30
+mode = 'json'
+
+[storage]
+directory = 'data/01_bronze/lever'
+
+[[boards]]
+source_key = 'lever_ataccama'
+company = 'Ataccama'
+board_token = 'ataccama'
+enabled = true

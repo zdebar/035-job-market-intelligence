@@ -1,0 +1,17 @@
+[source]
+id = 'ashby'
+
+[api]
+base_url = 'https://api.ashbyhq.com/posting-api/job-board'
+documentation_url = 'https://developers.ashbyhq.com/docs/public-job-posting-api'
+timeout_seconds = 30
+include_compensation = true
+
+[storage]
+directory = 'data/01_bronze/ashby'
+
+[[boards]]
+source_key = 'ashby_apify'
+company = 'Apify'
+board_name = 'apify'
+enabled = true
