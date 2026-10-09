@@ -31,7 +31,6 @@ Vybrány dle orientačního průzkumu českého trhu Data / AI Engineeringu.
 | Fáze | Název                      | Hlavní výsledek                                    |
 | ---- | -------------------------- | -------------------------------------------------- |
 | 6    | SQL analytics              | První užitečné analytické otázky a reporty         |
-| 7    | Data quality               | Automatické kontroly kvality dat                   |
 | 8    | Data modelling / Gold      | Stabilní analytický datový model a dbt             |
 | 9    | Druhý zdroj dat            | Ověření, že architektura není svázaná s jedním API |
 | 10   | Orchestration              | Automatické běhy, retry, logování a monitoring     |

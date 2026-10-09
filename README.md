@@ -88,12 +88,10 @@ uv run job-market-parse --dry-run
 The runner records each processed run in `raw_ingestion_runs` and skips runs
 with status `processed`. Failed runs can be retried by running the command again.
 
-Run the sample data-quality check:
+Run all SQL data-quality checks:
 
 ```bash
-docker compose exec -T postgres \
-  sh -c 'psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"' \
-  < sql/quality/001_processed_run_counts.sql
+uv run job-market-quality
 ```
 
 ## Branch guide
