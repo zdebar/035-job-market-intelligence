@@ -1,0 +1,9 @@
+[hours]
+minimum = 0
+maximum = 8784
+
+[hours.maximum_by_period]
+day = 24
+week = 168
+month = 744
+year = 8784

@@ -198,6 +198,7 @@ class ProcessingRepository:
             "job_posting_locations",
             "job_posting_work_modes",
             "job_posting_employment_options",
+            "job_posting_compensations",
             "job_skill_requirements",
         ):
             self.connection.execute(
@@ -249,6 +250,33 @@ class ProcessingRepository:
                     option.hours_min,
                     option.hours_max,
                     option.hours_period,
+                ),
+            )
+
+        for compensation in record.compensation_options:
+            employment_relation_id = self._optional_id(
+                "employment_relations",
+                compensation.employment_relation_name,
+            )
+            self.connection.execute(
+                """
+                INSERT INTO job_posting_compensations (
+                    job_posting_id,
+                    employment_relation_id,
+                    salary_min,
+                    salary_max,
+                    salary_currency,
+                    salary_period
+                )
+                VALUES (%s, %s, %s, %s, %s, %s)
+                """,
+                (
+                    job_posting_id,
+                    employment_relation_id,
+                    compensation.salary_min,
+                    compensation.salary_max,
+                    compensation.salary_currency,
+                    compensation.salary_period,
                 ),
             )
 

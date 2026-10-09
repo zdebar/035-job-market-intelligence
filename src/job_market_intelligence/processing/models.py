@@ -30,6 +30,17 @@ class EmploymentOption:
 
 
 @dataclass(frozen=True)
+class CompensationOption:
+    """One salary range offered for a posting."""
+
+    employment_relation_name: str | None = None
+    salary_min: Decimal | None = None
+    salary_max: Decimal | None = None
+    salary_currency: str | None = None
+    salary_period: str | None = None
+
+
+@dataclass(frozen=True)
 class ParsedJobPosting:
     """Normalized data extracted from one source advertisement."""
 
@@ -44,4 +55,5 @@ class ParsedJobPosting:
     locations: tuple[str, ...] = ()
     work_modes: tuple[str, ...] = ()
     employment_options: tuple[EmploymentOption, ...] = ()
+    compensation_options: tuple[CompensationOption, ...] = ()
     skill_requirements: tuple[SkillRequirement, ...] = ()

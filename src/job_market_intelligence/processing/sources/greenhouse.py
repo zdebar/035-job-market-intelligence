@@ -15,6 +15,7 @@ from job_market_intelligence.processing.models import (
 )
 from job_market_intelligence.processing.normalization import NormalizationDictionaries
 from job_market_intelligence.processing.utils import optional_text, parse_datetime
+from job_market_intelligence.processing.validation import HoursValidationRules
 
 
 class GreenhouseParser:
@@ -22,6 +23,7 @@ class GreenhouseParser:
 
     def __init__(self, project_root: Path) -> None:
         self.normalizer = NormalizationDictionaries.from_project_root(project_root)
+        self.hours_validation = HoursValidationRules.from_project_root(project_root)
 
     def parse(
         self,
@@ -124,6 +126,7 @@ class GreenhouseParser:
         relation_name = self.normalizer.employment_relations.find_first(employment_text)
         workload_name = self.normalizer.workloads.find_first(f"{employment_text}\n{search_text}")
         hours_min, hours_max, hours_period = extract_hours(search_text)
+        self.hours_validation.validate(hours_min, hours_max, hours_period)
         if not any((relation_name, workload_name, hours_min, hours_max, hours_period)):
             return []
 
