@@ -63,6 +63,37 @@ uv run job-market-ingest --source greenhouse --dry-run
 
 Greenhouse uses public board tokens and does not require an API key or password.
 
+## Raw parsing
+
+Apply the next migration to an existing database that already has `001`, `002` and `003`:
+
+```bash
+docker compose exec -T postgres \
+  sh -c 'psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"' \
+  < db/migrations/004_simplify_compensation.sql
+```
+
+Parse all new raw runs into PostgreSQL:
+
+```bash
+uv run job-market-parse
+```
+
+Preview discovered raw runs without a database connection:
+
+```bash
+uv run job-market-parse --dry-run
+```
+
+The runner records each processed run in `raw_ingestion_runs` and skips runs
+with status `processed`. Failed runs can be retried by running the command again.
+
+Run all SQL data-quality checks:
+
+```bash
+uv run job-market-quality
+```
+
 ## Branch guide
 
 - `main` — stable version

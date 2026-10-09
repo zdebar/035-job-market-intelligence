@@ -1,0 +1,17 @@
+# Canonical locations and source-text aliases.
+
+[[locations]]
+name = 'Czechia'
+aliases = ['Czechia', 'Czech Republic', 'CZ', 'Česko', 'Česká republika']
+
+[[locations]]
+name = 'Prague, Czechia'
+aliases = ['Prague, Czechia', 'Prague, Czech Republic', 'Prague, CZ', 'Prague', 'Praha, Česko', 'Praha, Česká republika', 'Praha']
+
+[[locations]]
+name = 'Brno, Czechia'
+aliases = ['Brno, Czechia', 'Brno, Czech Republic', 'Brno, CZ', 'Brno']
+
+[[locations]]
+name = 'Ostrava, Czechia'
+aliases = ['Ostrava, Czechia', 'Ostrava, Czech Republic', 'Ostrava, CZ', 'Ostrava']

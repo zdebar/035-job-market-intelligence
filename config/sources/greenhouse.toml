@@ -1,40 +1,20 @@
 [source]
-id = "greenhouse"
+id = 'greenhouse'
 
 [api]
-base_url = "https://boards-api.greenhouse.io/v1/boards"
+base_url = 'https://boards-api.greenhouse.io/v1/boards'
 timeout_seconds = 30
 include_content = true
 
 [storage]
-directory = "data/01_bronze/greenhouse"
+directory = 'data/01_bronze/greenhouse'
 
 [[boards]]
-company = "Make"
-board_token = "make"
+company = 'Mews'
+board_token = 'mewssystems'
 enabled = true
 
 [[boards]]
-company = "Second Foundation Tech"
-board_token = "secondfoundation"
-enabled = true
-
-[[boards]]
-company = "Capco"
-board_token = "capco"
-enabled = true
-
-[[boards]]
-company = "Nebius"
-board_token = "nebius"
-enabled = true
-
-[[boards]]
-company = "Pure Storage"
-board_token = "purestorage"
-enabled = true
-
-[[boards]]
-company = "Ubiquiti"
-board_token = "ubiquiti"
+company = 'Second Foundation Tech'
+board_token = 'sfweb'
 enabled = true

@@ -20,14 +20,14 @@ def test_greenhouse_configuration_loads() -> None:
 def test_greenhouse_boards_are_configured() -> None:
     config = load_config(CONFIG_PATH)
 
-    assert len(enabled_boards(config)) == 6
-    assert enabled_boards(config)[0]["board_token"] == "make"
+    assert len(enabled_boards(config)) == 2
+    assert enabled_boards(config)[0]["board_token"] == "mewssystems"
 
 
 def test_greenhouse_endpoint_and_parameters() -> None:
     config = load_config(CONFIG_PATH)
 
-    assert build_endpoint(config, "make") == (
-        "https://boards-api.greenhouse.io/v1/boards/make/jobs"
+    assert build_endpoint(config, "mewssystems") == (
+        "https://boards-api.greenhouse.io/v1/boards/mewssystems/jobs"
     )
     assert build_params(config) == {"content": "true"}

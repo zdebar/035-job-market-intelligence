@@ -1,0 +1,17 @@
+# Canonical employment relations and source-text aliases.
+
+[[employment_relations]]
+name = 'Employee'
+aliases = ['Employee', 'Employee - Permanent', 'Employment contract', 'HPP', 'Hlavní pracovní poměr', 'Pracovní poměr', 'Pracovní smlouva']
+
+[[employment_relations]]
+name = 'DPP'
+aliases = ['DPP', 'Dohoda o provedení práce']
+
+[[employment_relations]]
+name = 'DPČ'
+aliases = ['DPČ', 'Dohoda o pracovní činnosti']
+
+[[employment_relations]]
+name = 'Self-employed'
+aliases = ['Self-employed', 'Self employed', 'Contractor', 'Freelance', 'Freelancer', 'B2B', 'OSVČ', 'IČO', 'Živnost', 'Živnostník', 'Práce na fakturu']

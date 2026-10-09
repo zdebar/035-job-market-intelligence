@@ -1,0 +1,13 @@
+# Canonical workload values and source-text aliases.
+
+[[workloads]]
+name = 'Full-time'
+aliases = ['Full-time', 'Full time', 'Fulltime', 'Plný úvazek', 'Plny uvazek', 'Práce na plný úvazek', 'Prace na plny uvazek']
+
+[[workloads]]
+name = 'Part-time'
+aliases = ['Part-time', 'Part time', 'Parttime', 'Part-time employment', 'Částečný úvazek', 'Castecny uvazek', 'Zkrácený úvazek', 'Zkraceny uvazek', 'Práce na částečný úvazek', 'Prace na castecny uvazek']
+
+[[workloads]]
+name = 'Unspecified'
+aliases = []
