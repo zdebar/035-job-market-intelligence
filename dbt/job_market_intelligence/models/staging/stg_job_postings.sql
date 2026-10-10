@@ -19,7 +19,8 @@ select
     posting.updated_at,
     posting_source.canonical_job_id,
     posting_source.match_method,
-    posting_source.matched_at
+    posting_source.matched_at,
+    posting_source.selection_rank
 from {{ source('operational', 'job_postings') }} as posting
 left join {{ ref('stg_job_posting_sources') }} as posting_source
     on posting_source.job_posting_id = posting.id

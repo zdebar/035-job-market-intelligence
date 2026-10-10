@@ -226,7 +226,8 @@ class ProcessingRepository:
 
         job_posting_id = int(row[0])
         self._replace_child_records(job_posting_id, record)
-        self._ensure_canonical_job(job_posting_id)
+        canonical_job_id = self._ensure_canonical_job(job_posting_id)
+        self._refresh_canonical_job_ranking(canonical_job_id)
         return job_posting_id
 
     def _replace_child_records(self, job_posting_id: int, record: ParsedJobPosting) -> None:
@@ -318,13 +319,13 @@ class ProcessingRepository:
                 ),
             )
 
-    def _ensure_canonical_job(self, job_posting_id: int) -> None:
+    def _ensure_canonical_job(self, job_posting_id: int) -> int:
         existing = self.connection.execute(
             "SELECT canonical_job_id FROM job_posting_sources WHERE job_posting_id = %s",
             (job_posting_id,),
         ).fetchone()
         if existing is not None:
-            return
+            return int(existing[0])
 
         canonical_id = self._find_canonical_match(job_posting_id)
         match_method = "algorithmic_match" if canonical_id is not None else "new_canonical_job"
@@ -343,6 +344,71 @@ class ProcessingRepository:
             ) VALUES (%s, %s, %s, now())
             """,
             (canonical_id, job_posting_id, match_method),
+        )
+        return canonical_id
+
+    def _refresh_canonical_job_ranking(self, canonical_job_id: int) -> None:
+        self.connection.execute(
+            """
+            WITH ranked AS (
+                SELECT
+                    links.job_posting_id,
+                    CASE
+                        WHEN postings.status = 'active' THEN ROW_NUMBER() OVER (
+                            ORDER BY
+                                (postings.status = 'active') DESC,
+                                COALESCE(
+                                    postings.source_updated_at,
+                                    postings.retrieved_at
+                                ) DESC NULLS LAST,
+                                (
+                                    CASE WHEN postings.role_id IS NOT NULL THEN 1 ELSE 0 END
+                                    + CASE WHEN postings.seniority_level_id IS NOT NULL THEN 1 ELSE 0 END
+                                    + CASE WHEN postings.source_url IS NOT NULL THEN 1 ELSE 0 END
+                                    + CASE WHEN EXISTS (
+                                        SELECT 1
+                                        FROM job_posting_locations locations
+                                        WHERE locations.job_posting_id = postings.id
+                                    ) THEN 1 ELSE 0 END
+                                    + CASE WHEN EXISTS (
+                                        SELECT 1
+                                        FROM job_posting_work_modes work_modes
+                                        WHERE work_modes.job_posting_id = postings.id
+                                    ) THEN 1 ELSE 0 END
+                                    + CASE WHEN EXISTS (
+                                        SELECT 1
+                                        FROM job_skill_requirements skills
+                                        WHERE skills.job_posting_id = postings.id
+                                    ) THEN 1 ELSE 0 END
+                                    + CASE WHEN EXISTS (
+                                        SELECT 1
+                                        FROM job_posting_compensations compensation
+                                        WHERE compensation.job_posting_id = postings.id
+                                    ) THEN 1 ELSE 0 END
+                                    + CASE WHEN EXISTS (
+                                        SELECT 1
+                                        FROM job_posting_employment_options employment
+                                        WHERE employment.job_posting_id = postings.id
+                                    ) THEN 1 ELSE 0 END
+                                ) DESC,
+                                postings.id ASC
+                        )::INTEGER
+                        ELSE NULL
+                    END AS selection_rank
+                FROM job_posting_sources links
+                JOIN job_postings postings ON postings.id = links.job_posting_id
+                WHERE links.canonical_job_id = %s
+            )
+            UPDATE job_posting_sources links
+            SET selection_rank = ranked.selection_rank
+            FROM ranked
+            WHERE links.job_posting_id = ranked.job_posting_id
+            """,
+            (canonical_job_id,),
+        )
+        self.connection.execute(
+            "UPDATE canonical_jobs SET updated_at = now() WHERE id = %s",
+            (canonical_job_id,),
         )
 
     def _find_canonical_match(self, job_posting_id: int) -> int | None:
@@ -458,10 +524,28 @@ class ProcessingRepository:
             WHERE source_id = %s
               AND status = 'active'
               AND last_seen_at < %s
+            RETURNING id
             """,
             (source_id, retrieved_at),
         )
-        return result.rowcount
+        posting_ids = [int(row[0]) for row in result.fetchall()]
+        canonical_ids = set()
+        for posting_id in posting_ids:
+            row = self.connection.execute(
+                """
+                SELECT canonical_job_id
+                FROM job_posting_sources
+                WHERE job_posting_id = %s
+                """,
+                (posting_id,),
+            ).fetchone()
+            if row is not None:
+                canonical_ids.add(int(row[0]))
+
+        for canonical_id in canonical_ids:
+            self._refresh_canonical_job_ranking(canonical_id)
+
+        return len(posting_ids)
 
     def _required_source_id(self, source_key: str) -> int:
         value = self._optional_id("sources", "source_key", source_key)

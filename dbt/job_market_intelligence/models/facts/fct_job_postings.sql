@@ -12,6 +12,7 @@ select
     posting.retrieved_at,
     posting.last_seen_at,
     posting.source_url,
+    posting.selection_rank,
     compensation.salary_min,
     compensation.salary_max,
     compensation.salary_currency,

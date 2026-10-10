@@ -65,6 +65,20 @@ models:
           - not_null
           - unique
 
+  - name: fct_canonical_jobs
+    description: One row per logical job opportunity using the current primary posting.
+    columns:
+      - name: canonical_job_id
+        data_tests:
+          - not_null
+          - unique
+      - name: primary_job_posting_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('fct_job_postings')
+                field: job_posting_id
+
   - name: bridge_job_posting_skills
     description: One row per posting-skill relationship.
     columns:
@@ -97,3 +111,36 @@ models:
               arguments:
                 to: ref('fct_job_postings')
                 field: job_posting_id
+
+  - name: bridge_canonical_job_skills
+    description: Skills from the current primary posting of each canonical job.
+    columns:
+      - name: canonical_job_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_canonical_jobs')
+                field: canonical_job_id
+
+  - name: bridge_canonical_job_locations
+    description: Locations from the current primary posting of each canonical job.
+    columns:
+      - name: canonical_job_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_canonical_jobs')
+                field: canonical_job_id
+
+  - name: bridge_canonical_job_work_modes
+    description: Work modes from the current primary posting of each canonical job.
+    columns:
+      - name: canonical_job_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_canonical_jobs')
+                field: canonical_job_id

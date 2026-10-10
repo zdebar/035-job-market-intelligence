@@ -21,7 +21,16 @@ Vsechny prvni dbt modely budou materializovane jako `view` v schema `analytics`.
 `fct_job_postings` nebude obsahovat M:N hodnoty jako JSON pole objektu.
 Tyto vztahy budou reprezentovany bridge modely.
 
-Primarni posting canonical jobu se zatim neurcuje.
+Canonical job muze mit vice zdrojovych postingu. Pro analytickou vrstvu se
+urcuje jeden aktualni primarni posting:
+
+- pouze aktivni postingy dostanou `selection_rank`;
+- neaktivni postingy zustavaji prirazene, ale maji `selection_rank = NULL`;
+- `selection_rank = 1` je aktualni reprezentace canonical jobu;
+- canonical job bez aktivniho postingu nema aktualni reprezentaci;
+- hodnoty canonical jobu se neslucuji z vice postingu;
+- vyber probiha podle `source_updated_at`, s fallbackem na `retrieved_at`;
+- pri shode rozhodne jednoduchy completeness score a pote `job_posting_id`.
 
 ## Staging models
 
@@ -68,8 +77,21 @@ Pocet inzeratu se pocita jako `COUNT(*)`.
 Pocet logickych pracovnich prilezitosti se pocita jako
 `COUNT(DISTINCT canonical_job_id)`.
 
-Zatim nevytvarime samostatny `fct_canonical_jobs`. Neexistuje primarni posting
-ani dalsi stabilni atribut canonical jobu, ktery by takovy model vyzadoval.
+### `fct_canonical_jobs`
+
+Grain: jeden radek na jeden canonical job.
+
+Model obsahuje:
+
+- `canonical_job_id`,
+- `primary_job_posting_id`, pokud existuje aktivni posting,
+- pocty vsech a aktivnich postingu,
+- pocet zdroju,
+- aktualni scalar hodnoty z primarniho postingu,
+- aktualni salary hodnoty z primarniho postingu.
+
+Canonical job bez aktivniho postingu v modelu zustava, ale jeho aktualni
+hodnoty a `primary_job_posting_id` jsou `NULL`.
 
 ## Bridge models
 
@@ -79,17 +101,26 @@ ani dalsi stabilni atribut canonical jobu, ktery by takovy model vyzadoval.
 | `bridge_job_posting_locations` | jeden posting + jedna location | `stg_job_posting_locations` |
 | `bridge_job_posting_work_modes` | jeden posting + jeden work mode | `stg_job_posting_work_modes` |
 
+Pro analytickou praci na urovni canonical jobu existuji take tri jednoduche
+bridge views odvozene pouze z primarniho postingu:
+
+- `bridge_canonical_job_skills`,
+- `bridge_canonical_job_locations`,
+- `bridge_canonical_job_work_modes`.
+
+Tyto modely nic neslucuji. Pouze zobrazuji hodnoty primarniho postingu na
+canonical grainu.
+
 Bridge model je analyticka podoba existujici spojovaci tabulky. Nemusi byt
 nova fyzicka PostgreSQL tabulka; prvni implementace bude dbt `view`.
 
 ## Out of scope
 
-- primarni listing canonical jobu,
+- historie zmen primarniho postingu,
 - historicke salary snapshoty,
 - slowly changing dimensions,
 - incremental materializace,
 - `dim_date`,
-- samostatny fact model canonical jobs,
 - agregace urcene pouze pro jeden dashboard.
 
 Tyto veci se pridaji az po konkretnim analytickem pozadavku.
