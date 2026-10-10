@@ -2,6 +2,11 @@
 
 ## Scope
 
+Canonical matching and primary-posting ranking are completed before dbt runs.
+The operational tables therefore already contain the posting-to-canonical
+relationships that dbt exposes analytically. dbt does not decide whether two
+postings are the same job.
+
 dbt vytvori pouze analytickou vrstvu nad existujici PostgreSQL databazi.
 Provozni tabulky, ingestion ani extrakce se v teto fazi nemeni.
 

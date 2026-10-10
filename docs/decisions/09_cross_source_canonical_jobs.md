@@ -44,6 +44,21 @@ manual matching remain reserved values.
 
 ## Primary posting ranking
 
+## Example
+
+Suppose Greenhouse and Lever both publish the same Ataccama vacancy:
+
+    Greenhouse: (greenhouse_mews, 123)
+    Lever:      (lever_ataccama, abc)
+
+They become two job_postings, because their source identities differ. If their
+fingerprints match, both rows link to one canonical_job with two
+job_posting_sources rows. A repeated Greenhouse download updates the first row
+instead of creating a third row.
+
+The canonical job is a logical grouping, not a copied or merged advertisement.
+Its current analytical values come from the selected primary posting.
+
 `job_posting_sources.selection_rank` stores the current order within one
 canonical job.
 

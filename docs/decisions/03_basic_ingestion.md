@@ -8,6 +8,32 @@ APIs provided by the ATS platform used by the company.
 Job portals and aggregators are secondary sources. Their main purpose is to identify
 relevant companies, roles and links to the original company career page.
 
+## Source identity and ingestion unit
+
+A configured source is one public company board, not only the ATS platform.
+
+Examples:
+
+    greenhouse_mews
+    lever_ataccama
+    ashby_apify
+
+The stable sources.key identifies the board. sources.name is only a readable
+label and may change without changing the source identity.
+
+One board download creates one raw ingestion run. For Greenhouse, Lever and Ashby
+the request retrieves all currently published postings on that board. Shared
+keyword and location settings are not used as filters for these board-level
+endpoints.
+
+The source adapter passes the provider's public source_job_id to processing.
+The same source posting is therefore recognized across repeated runs by:
+
+    (source_id, source_job_id)
+
+The ingestion phase only downloads and stores the response. Parsing, normalization,
+canonical matching and database loading are later processing steps.
+
 ## Primary sources — company career systems
 
 | Source | URL | Access | Status |
