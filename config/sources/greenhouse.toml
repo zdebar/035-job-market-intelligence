@@ -10,11 +10,13 @@ include_content = true
 directory = 'data/01_bronze/greenhouse'
 
 [[boards]]
+source_key = 'greenhouse_mews'
 company = 'Mews'
 board_token = 'mewssystems'
 enabled = true
 
 [[boards]]
+source_key = 'greenhouse_second_foundation_tech'
 company = 'Second Foundation Tech'
 board_token = 'sfweb'
 enabled = true

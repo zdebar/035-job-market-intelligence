@@ -10,7 +10,7 @@ Python · `uv` · PostgreSQL · Docker · Azure · Databricks · Power BI
 
 ```bash
 uv sync
-cp .env.example .env
+test -f .env || cp .env.example .env
 uv run job-market-intelligence
 ```
 
@@ -22,9 +22,14 @@ bash scripts/check.sh
 
 ## Data sources
 
-Configured:
+Configured primary boards:
 
-- Greenhouse Job Board API — public GET API, JSON, full job content
+- Lever public postings API - `lever_ataccama`
+- Ashby public job-board API - `ashby_apify`
+- Greenhouse Job Board API - configured company boards
+
+Each configured company board creates one raw ingestion run. The current
+implementation downloads the complete published board without pagination.
 
 Planned Czech sources:
 
@@ -65,6 +70,14 @@ Greenhouse uses public board tokens and does not require an API key or password.
 
 ## Raw parsing
 
+Apply the cross-source matching migration:
+
+```bash
+docker compose exec -T postgres \
+  sh -c 'psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"' \
+  < db/migrations/005_cross_source_canonical_matching.sql
+```
+
 Apply the next migration to an existing database that already has `001`, `002` and `003`:
 
 ```bash
@@ -87,6 +100,12 @@ uv run job-market-parse --dry-run
 
 The runner records each processed run in `raw_ingestion_runs` and skips runs
 with status `processed`. Failed runs can be retried by running the command again.
+
+Partial runs are retried explicitly:
+
+```bash
+uv run job-market-parse --retry-partial
+```
 
 Run all SQL data-quality checks:
 

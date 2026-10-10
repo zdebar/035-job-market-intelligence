@@ -51,8 +51,27 @@ class ParsedJobPosting:
     source_published_at: datetime | None
     source_updated_at: datetime | None
     raw_advertisement: dict[str, Any]
+    content_fingerprint: str | None = None
     locations: tuple[str, ...] = ()
     work_modes: tuple[str, ...] = ()
     employment_options: tuple[EmploymentOption, ...] = ()
     compensation_options: tuple[CompensationOption, ...] = ()
     skill_requirements: tuple[SkillRequirement, ...] = ()
+
+
+@dataclass(frozen=True)
+class RecordError:
+    """One non-fatal processing error for a raw record."""
+
+    source_job_id: str | None
+    stage: str
+    error_type: str
+    error_message: str
+
+
+@dataclass(frozen=True)
+class ParseResult:
+    """Parsed records and errors that did not stop the whole run."""
+
+    records: tuple[ParsedJobPosting, ...]
+    errors: tuple[RecordError, ...]

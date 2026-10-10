@@ -7,3 +7,11 @@ aliases = ['Mews']
 [[companies]]
 name = 'Second Foundation Tech'
 aliases = ['Second Foundation Tech', 'Second Foundation']
+
+[[companies]]
+name = 'Ataccama'
+aliases = ['Ataccama']
+
+[[companies]]
+name = 'Apify'
+aliases = ['Apify']

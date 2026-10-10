@@ -8,6 +8,11 @@ from typing import Any
 
 def parse_datetime(value: Any) -> datetime | None:
     """Parse an ISO timestamp and make date-only values UTC timestamps."""
+    if isinstance(value, (int, float)):
+        timestamp = float(value)
+        if timestamp > 10_000_000_000:
+            timestamp /= 1000
+        return datetime.fromtimestamp(timestamp, tz=UTC)
     text = optional_text(value)
     if not text:
         return None

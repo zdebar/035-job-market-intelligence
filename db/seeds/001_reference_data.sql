@@ -1,15 +1,19 @@
 BEGIN;
 
-INSERT INTO sources (name)
+INSERT INTO sources (name, source_key)
 VALUES
-    ('Mews'),
-    ('Second Foundation Tech')
-ON CONFLICT (name) DO NOTHING;
+    ('Mews', 'greenhouse_mews'),
+    ('Second Foundation Tech', 'greenhouse_second_foundation_tech'),
+    ('Ataccama', 'lever_ataccama'),
+    ('Apify', 'ashby_apify')
+ON CONFLICT (source_key) DO NOTHING;
 
 INSERT INTO companies (name)
 VALUES
     ('Mews'),
-    ('Second Foundation Tech')
+    ('Second Foundation Tech'),
+    ('Ataccama'),
+    ('Apify')
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO roles (name)
