@@ -5,3 +5,4 @@ __pycache__/
 data/
 raw/
 /docs/plan.md
+dbt/logs/

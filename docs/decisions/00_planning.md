@@ -31,9 +31,9 @@ Vybrány dle orientačního průzkumu českého trhu Data / AI Engineeringu.
 | Fáze | Název                      | Hlavní výsledek                                    |
 | ---- | -------------------------- | -------------------------------------------------- |
 | 8    | Data modelling / Gold      | Stabilní analytický datový model a dbt             |
-| 9    | Druhý zdroj dat            | Ověření, že architektura není svázaná s jedním API |
 | 10   | Orchestration              | Automatické běhy, retry, logování a monitoring     |
 | 11   | Cloud foundation           | Azure a základní cloudové služby                   |
+
 | 12   | Databricks / PySpark       | Distribuované zpracování a Delta Lake              |
 | 13   | Dashboard                  | Power BI analytický dashboard                      |
 | 14   | AI extraction              | Text pracovního inzerátu → strukturovaná data      |

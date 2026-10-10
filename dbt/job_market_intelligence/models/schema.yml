@@ -1,0 +1,99 @@
+version: 2
+
+models:
+  - name: stg_job_posting_sources
+    description: One row per posting-to-canonical-job relationship.
+    columns:
+      - name: job_posting_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: stg_job_postings
+    description: One row per source job posting, including its canonical-job relationship.
+    columns:
+      - name: job_posting_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: stg_job_posting_compensations
+    description: One optional salary range per job posting.
+    columns:
+      - name: job_posting_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: dim_company
+    description: One row per normalized company.
+    columns:
+      - name: company_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: dim_role
+    description: One row per normalized role.
+    columns:
+      - name: role_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: dim_source
+    description: One row per source board.
+    columns:
+      - name: source_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: dim_seniority
+    description: One row per seniority level.
+    columns:
+      - name: seniority_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: fct_job_postings
+    description: One row per source job posting.
+    columns:
+      - name: job_posting_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: bridge_job_posting_skills
+    description: One row per posting-skill relationship.
+    columns:
+      - name: job_posting_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_job_postings')
+                field: job_posting_id
+
+  - name: bridge_job_posting_locations
+    description: One row per posting-location relationship.
+    columns:
+      - name: job_posting_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_job_postings')
+                field: job_posting_id
+
+  - name: bridge_job_posting_work_modes
+    description: One row per posting-work-mode relationship.
+    columns:
+      - name: job_posting_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_job_postings')
+                field: job_posting_id

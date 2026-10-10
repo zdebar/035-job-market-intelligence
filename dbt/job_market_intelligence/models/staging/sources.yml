@@ -1,0 +1,17 @@
+version: 2
+
+sources:
+  - name: operational
+    schema: public
+    description: Operational PostgreSQL tables populated by the ingestion pipeline.
+    tables:
+      - name: job_postings
+      - name: job_posting_sources
+      - name: job_skill_requirements
+      - name: job_posting_locations
+      - name: job_posting_work_modes
+      - name: job_posting_compensations
+      - name: companies
+      - name: roles
+      - name: sources
+      - name: seniority_levels
